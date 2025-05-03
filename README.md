@@ -1,15 +1,13 @@
 # Task Management API
 
-A Spring Boot application for managing tasks with user authentication and categorization features.
+## Project Setup and Running Instructions
 
-## Prerequisites
-
+### Prerequisites
 - Java 17 or higher
 - Maven 3.6 or higher
 - MySQL (for production) / H2 (for development)
 
-## Quick Start
-
+### Setup Steps
 1. Clone the repository:
    ```bash
    git clone <repository-url>
@@ -28,29 +26,161 @@ A Spring Boot application for managing tasks with user authentication and catego
 
 The application will start on `http://localhost:8080`
 
-## Features
+## Development Assumptions
 
-- User authentication with JWT
-- Task management (create, read, update, delete)
-- Task categorization
-- H2 in-memory database for development
-- RESTful API endpoints
+1. Authentication:
+   - Users must register before accessing any task-related endpoints
+   - JWT tokens are used for session management
+   - Tokens expire after 24 hours
 
-## API Endpoints
+2. Database:
+   - H2 in-memory database for development environment
+   - MySQL for production environment
+   - Database schema is automatically created on startup
 
-### Authentication
-- POST `/api/auth/signup` - Register a new user
-- POST `/api/auth/signin` - Login and get JWT token
+3. Task Management:
+   - Tasks belong to a single user
+   - Tasks can have multiple categories
+   - Tasks have a completion status (completed/not completed)
 
-### Tasks
-- GET `/api/tasks` - Get all tasks for authenticated user
-- POST `/api/tasks` - Create a new task
-- PUT `/api/tasks/{id}` - Update a task
-- DELETE `/api/tasks/{id}` - Delete a task
+## Technologies and Libraries Used
 
-### Categories
-- GET `/api/categories` - Get all categories
-- POST `/api/categories` - Create a new category
+### Core Technologies
+- Spring Boot 3.4.5
+- Java 17
+- Maven
+
+### Security
+- Spring Security
+- JWT (JSON Web Tokens)
+- BCrypt password encryption
+
+### Database
+- Spring Data JPA
+- H2 Database (Development)
+- MySQL Connector (Production)
+
+### Testing
+- JUnit 5
+- Spring Boot Test
+- AssertJ
+- Spring Security Test
+
+### Development Tools
+- Lombok
+- Spring Boot DevTools
+- Spring Validation
+
+## Challenges Faced and Solutions
+
+1. **Authentication Implementation**
+   - Challenge: Implementing secure JWT-based authentication
+   - Solution: Used Spring Security with JWT filter chain and custom UserDetailsService
+
+2. **Database Relationships**
+   - Challenge: Managing many-to-many relationships between tasks and categories
+   - Solution: Implemented proper JPA mappings with join tables
+
+3. **Testing**
+   - Challenge: Testing secured endpoints and maintaining test data
+   - Solution: Used @WithMockUser and @Sql annotations for test data management
+
+4. **Exception Handling**
+   - Challenge: Consistent error responses across the application
+   - Solution: Implemented global exception handling with @ControllerAdvice
+
+## API Specification
+
+### Authentication Endpoints
+
+#### Register User
+```
+POST /api/auth/signup
+Content-Type: application/json
+
+Request:
+{
+    "username": "string",
+    "email": "string",
+    "password": "string"
+}
+
+Response:
+{
+    "id": "long",
+    "username": "string",
+    "email": "string"
+}
+```
+
+#### Login
+```
+POST /api/auth/signin
+Content-Type: application/json
+
+Request:
+{
+    "username": "string",
+    "password": "string"
+}
+
+Response:
+{
+    "token": "string",
+    "type": "Bearer"
+}
+```
+
+### Task Endpoints
+
+#### Create Task
+```
+POST /api/tasks
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request:
+{
+    "title": "string",
+    "description": "string",
+    "categories": ["string"]
+}
+
+Response:
+{
+    "id": "long",
+    "title": "string",
+    "description": "string",
+    "completed": "boolean",
+    "categories": ["string"],
+    "createdAt": "datetime",
+    "updatedAt": "datetime"
+}
+```
+
+#### Get Tasks
+```
+GET /api/tasks
+Authorization: Bearer {token}
+
+Query Parameters:
+- completed (optional): boolean
+- category (optional): string
+- search (optional): string
+
+Response:
+[
+    {
+        "id": "long",
+        "title": "string",
+        "description": "string",
+        "completed": "boolean",
+        "categories": ["string"],
+        "createdAt": "datetime",
+        "updatedAt": "datetime"
+    }
+]
+```
 
 ## Development
 
