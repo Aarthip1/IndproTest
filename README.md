@@ -77,15 +77,7 @@ The application will start on `http://localhost:8080`
    - Challenge: Implementing secure JWT-based authentication
    - Solution: Used Spring Security with JWT filter chain and custom UserDetailsService
 
-2. **Database Relationships**
-   - Challenge: Managing many-to-many relationships between tasks and categories
-   - Solution: Implemented proper JPA mappings with join tables
-
-3. **Testing**
-   - Challenge: Testing secured endpoints and maintaining test data
-   - Solution: Used @WithMockUser and @Sql annotations for test data management
-
-4. **Exception Handling**
+2. **Exception Handling**
    - Challenge: Consistent error responses across the application
    - Solution: Implemented global exception handling with @ControllerAdvice
 
